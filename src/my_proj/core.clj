@@ -1,23 +1,6 @@
 (ns my-proj.core
   (:gen-class))
 
-(defn matching-part
-  [part]
-  {:name (clojure.string/replace (:name part) #"^left-" "right-")
-   :size (:size part)})
-
-(defn symmetrize-body-parts
-  "Expects a seq of maps that have :name and :size"
-  [asym-body-parts]
-  (loop [remaining-asym-parts asym-body-parts
-         final-body-parts []]
-    (if (empty? remaining-asym-parts)
-      final-body-parts
-      (let [[part & remaining] remaining-asym-parts]
-            (recur remaining
-                   (into final-body-parts
-                         (set [part (matching-part part)])))))))
-
 (def asym-hobbit-body-parts [{:name "head" :size 3}
                              {:name "left-eye" :size 1}
                              {:name "left-ear" :size 1}
@@ -37,9 +20,46 @@
                              {:name "left-lower-leg" :size 3}
                              {:name "left-achilles" :size 1}
                              {:name "left-foot" :size 2}])
+
+(defn matching-part
+  [part]
+  {:name (clojure.string/replace (:name part) #"^left-" "right-")
+   :size (:size part)})
+
+(defn symmetrize-body-parts
+  "Expects a seq of maps that have :name and :size"
+  [asym-body-parts]
+  (loop [remaining-asym-parts asym-body-parts
+         final-body-parts []]
+    (if (empty? remaining-asym-parts)
+      final-body-parts
+      (let [[part & remaining] remaining-asym-parts]
+            (recur remaining
+                   (into final-body-parts
+                         (set [part (matching-part part)])))))))
+
+(defn better-symmetry-body-parts
+  "Expects a seq of maps tha have a :name and :size"
+  [asym-body-parts]
+  (reduce (fn [final-body-parts part]
+            (into final-body-parts (set [part (matching-part part)])))
+          []
+          asym-body-parts))
+
+(defn hit
+  [asym-body-parts]
+  (let [sym-parts (better-symmetry-body-parts asym-body-parts)
+        body-part-size-sum (reduce + (map :size sym-parts))
+        target (rand body-part-size-sum)]
+    (loop [[part & remaining] sym-parts
+           accumulated-size (:size part)]
+      (if (> accumulated-size target)
+        part
+        (recur remaining (+ accumulated-size (:size (first remaining))))))))
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
   ;(println "Look at me!")
-  (symmetrize-body-parts asym-hobbit-body-parts))
+  (hit asym-hobbit-body-parts))
 
