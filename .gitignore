@@ -1,26 +1,11 @@
-<<<<<<< HEAD
 /target
 /classes
 /checkouts
-=======
->>>>>>> 0ca5a5bcbe84adac3df5149fae23ee946a24b42b
 pom.xml
 pom.xml.asc
 *.jar
 *.class
-<<<<<<< HEAD
 /.lein-*
 /.nrepl-port
 .hgignore
 .hg/
-=======
-/lib/
-/classes/
-/target/
-/checkouts/
-.lein-deps-sum
-.lein-repl-history
-.lein-plugins/
-.lein-failures
-.nrepl-port
->>>>>>> 0ca5a5bcbe84adac3df5149fae23ee946a24b42b
